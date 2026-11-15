@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mentoría 1:1: Tu Primer Portafolio | Finanzas Ecuador</title>
+<meta name="description" content="Mentoría individual para armar tu primer portafolio de inversión desde Ecuador, paso a paso. Tú decides y ejecutas, yo te guío en cada decisión.">
+<meta property="og:title" content="Mentoría 1:1: Tu Primer Portafolio">
+<meta property="og:description" content="Arma tu primer portafolio de inversión desde Ecuador, paso a paso, con guía personalizada.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://mentoria.juanvotruba.com/juan.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Lora:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FAF8F4; --ink:#1d1d1b; --muted:#5d5b55; --line:#e6e1d6; --card:#ffffff;
+  --yellow:#F5C518; --yellow-d:#e0b210; --soft:#F3F0E8;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased}
+.wrap{max-width:720px;margin:0 auto;padding:0 24px}
+h1,h2,h3{font-family:'Lora',Georgia,serif;font-weight:600;line-height:1.2;letter-spacing:-0.01em}
+h1{font-size:clamp(34px,6vw,48px)}
+h2{font-size:clamp(26px,4.4vw,32px);margin-bottom:18px}
+h3{font-size:22px}
+p{margin-bottom:14px}
+a{color:inherit}
+section{padding:56px 0;border-top:1px solid var(--line)}
+section.first{border-top:0}
+.eyebrow{font-size:13px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:18px}
+.eyebrow b{display:inline-block;width:28px;height:3px;background:var(--yellow);vertical-align:middle;margin-right:10px;border-radius:2px}
+.lead{font-size:19px;color:var(--muted);max-width:600px}
+.btn{display:inline-block;background:var(--yellow);color:#111;font-weight:600;font-size:17px;text-decoration:none;padding:16px 30px;border-radius:10px;transition:background .15s,transform .15s}
+.btn:hover{background:var(--yellow-d);transform:translateY(-1px)}
+.btn.block{display:block;text-align:center}
+.link{font-weight:500;text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--yellow);text-decoration-thickness:2px}
+/* nav */
+.top{padding:22px 0}
+.top .wrap{display:flex;justify-content:space-between;align-items:center}
+.brand{font-weight:600;font-size:15px;letter-spacing:.01em}
+.brand span{display:inline-block;width:10px;height:10px;background:var(--yellow);border-radius:50%;margin-right:8px}
+/* hero */
+.hero{padding:44px 0 64px}
+.hero h1{margin-bottom:20px}
+.hero .lead{margin-bottom:30px}
+.hero .note{font-size:14px;color:var(--muted);margin-top:14px;margin-bottom:0}
+/* lists */
+ul.checks{list-style:none;margin:6px 0 18px}
+ul.checks li{position:relative;padding-left:32px;margin-bottom:12px}
+ul.checks li::before{content:"";position:absolute;left:0;top:.5em;width:14px;height:8px;border-left:3px solid var(--yellow-d);border-bottom:3px solid var(--yellow-d);transform:rotate(-45deg) translateY(-50%)}
+ul.cross li::before{border:0;width:14px;height:3px;background:#b9b4a8;transform:none;top:.8em}
+.callout{background:var(--soft);border-radius:12px;padding:18px 22px;font-size:16px;color:var(--muted);margin-top:22px}
+/* plans */
+.plans{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:26px}
+.plan{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:28px 24px;display:flex;flex-direction:column}
+.plan.main{border:2px solid var(--yellow)}
+.badge{align-self:flex-start;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;background:var(--yellow);color:#111;padding:4px 10px;border-radius:20px;margin-bottom:12px}
+.badge.ghost{background:var(--soft);color:var(--muted)}
+.plan h3{margin-bottom:6px}
+.plan .for{font-size:15px;color:var(--muted);min-height:70px;margin-bottom:12px}
+.price{margin:6px 0 2px}
+.price .old{color:#8b877d;text-decoration:line-through;font-size:16px;margin-right:8px}
+.price .new{font-family:'Lora',Georgia,serif;font-size:44px;font-weight:600;line-height:1}
+.price-sub{font-size:13px;color:var(--muted);margin-bottom:18px}
+.plan ul{list-style:none;font-size:15.5px;margin-bottom:22px;flex:1}
+.plan li{padding:8px 0;border-top:1px solid var(--line)}
+.plan li:first-child{border-top:0}
+.plan li strong{font-weight:600}
+.plan .slots{font-size:13.5px;color:var(--muted);text-align:center;margin:10px 0 0}
+.deadline{text-align:center;font-size:15px;margin-top:22px;color:var(--muted)}
+.deadline b{color:var(--ink)}
+/* steps */
+ol.steps{list-style:none;counter-reset:s;margin-top:10px}
+ol.steps li{counter-increment:s;position:relative;padding:0 0 22px 56px;margin:0;min-height:62px}
+ol.steps li::before{content:counter(s);position:absolute;left:0;top:-2px;width:38px;height:38px;border-radius:50%;background:var(--yellow);color:#111;font-weight:600;display:flex;align-items:center;justify-content:center}
+ol.steps li::after{content:"";position:absolute;left:18px;top:42px;bottom:2px;width:2px;background:var(--line)}
+ol.steps li:last-child::after{display:none}
+/* about */
+.about{display:grid;grid-template-columns:230px 1fr;gap:34px;align-items:center}
+.about img{width:100%;height:auto;border-radius:18px;display:block}
+/* downloads */
+.dl{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:22px}
+.dl a{display:block;text-decoration:none;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 20px;transition:border-color .15s}
+.dl a:hover{border-color:var(--yellow-d)}
+.dl small{display:block;color:var(--muted);font-size:13.5px;margin-top:2px}
+.dl strong{font-weight:600}
+/* final */
+.final{text-align:center;padding:64px 0 72px}
+.final h2{margin-bottom:14px}
+.final .lead{margin:0 auto 28px}
+.mail{margin-top:16px;font-size:15px;color:var(--muted)}
+footer{border-top:1px solid var(--line);padding:34px 0 48px;font-size:13.5px;color:var(--muted);line-height:1.6}
+footer p{margin-bottom:10px}
+@media(max-width:640px){
+  body{font-size:16.5px}
+  .plans,.dl{grid-template-columns:1fr}
+  .plan .for{min-height:0}
+  .about{grid-template-columns:1fr;gap:22px}
+  .about img{max-width:240px}
+  section{padding:44px 0}
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap"><div class="brand"><span></span>Finanzas Ecuador</div></div>
+</header>
+
+<main>
+
+<section class="hero first">
+  <div class="wrap">
+    <p class="eyebrow"><b></b>Mentoría 1:1</p>
+    <h1>Tu primer portafolio de inversión, paso a paso</h1>
+    <p class="lead">Mentoría individual para armar tu primer portafolio. Tú decides y ejecutas; yo te guío en cada decisión, desde abrir la cuenta hasta tu primera compra.</p>
+    <a class="btn" href="mailto:finanzas@juanvotruba.com?subject=Mentor%C3%ADa%201%3A1%20-%20Quiero%20informaci%C3%B3n">Escríbeme para empezar</a>
+    <p class="note">Respondo por correo. Sin compromiso hasta que reserves tu cupo.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Para quién es</h2>
+    <p>Está pensada para profesionales en Ecuador que ya tienen ahorros listos para invertir y quieren empezar bien, sin improvisar.</p>
+    <ul class="checks">
+      <li>Tienes dinero ahorrado, pero aún no tienes un portafolio armado.</li>
+      <li>No sabes por dónde empezar: qué cuenta abrir, cómo enviar el dinero, qué comprar.</li>
+      <li>Prefieres una guía directa y personalizada antes que ver decenas de videos.</li>
+    </ul>
+    <div class="callout">Si todavía no tienes ahorros para invertir, empieza por el contenido gratuito del canal: es mejor construir primero la base.</div>
+  </div>
+</section>
+
+<section id="niveles">
+  <div class="wrap">
+    <h2>Los dos niveles</h2>
+    <p>Elige entre una sesión para arrancar o tres meses de acompañamiento. Pago único por transferencia bancaria.</p>
+
+    <div class="plans">
+      <div class="plan">
+        <span class="badge ghost">Una sesión</span>
+        <h3>Arranque</h3>
+        <p class="for">Quieres un plan claro y ejecutarlo tú mismo.</p>
+        <div class="price"><span class="old">$110</span><span class="new">$90</span></div>
+        <p class="price-sub">USD · precio de lanzamiento</p>
+        <ul>
+          <li><strong>Sesión inicial</strong> de 60 min, virtual o presencial</li>
+          <li><strong>Cuestionario</strong> previo</li>
+          <li><strong>Plan escrito</strong> con tu portafolio</li>
+          <li><strong>1 seguimiento</strong> de 30 min, a las 4 semanas</li>
+        </ul>
+        <a class="btn block" href="mailto:finanzas@juanvotruba.com?subject=Mentor%C3%ADa%201%3A1%20-%20Nivel%20Arranque&body=Hola%20Juan%2C%20me%20interesa%20el%20nivel%20Arranque.">Quiero Arranque</a>
+        <p class="slots">8 cupos al mes</p>
+      </div>
+
+      <div class="plan main">
+        <span class="badge">Más completo</span>
+        <h3>Acompañamiento 90 días</h3>
+        <p class="for">Quieres acompañamiento durante tus primeras compras y cambios.</p>
+        <div class="price"><span class="old">$275</span><span class="new">$225</span></div>
+        <p class="price-sub">USD · precio de lanzamiento</p>
+        <ul>
+          <li><strong>Sesión inicial</strong> de 90 min por videollamada</li>
+          <li><strong>Cuestionario</strong> previo</li>
+          <li><strong>Plan escrito</strong> con tu portafolio</li>
+          <li><strong>2 seguimientos</strong> de 30 min, en los meses 1 y 3</li>
+          <li><strong>1 mensaje por semana</strong>, respuesta en 48 h</li>
+          <li><strong>Revisión final</strong> al cierre de los 90 días</li>
+        </ul>
+        <a class="btn block" href="mailto:finanzas@juanvotruba.com?subject=Mentor%C3%ADa%201%3A1%20-%20Nivel%20Acompa%C3%B1amiento%2090%20d%C3%ADas&body=Hola%20Juan%2C%20me%20interesa%20el%20nivel%20Acompa%C3%B1amiento%2090%20d%C3%ADas.">Quiero 90 días</a>
+        <p class="slots">3 cupos al mes</p>
+      </div>
+    </div>
+    <p class="deadline">Precio de lanzamiento válido hasta el <b>31 de diciembre de 2026</b>.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Cómo funciona</h2>
+    <ol class="steps">
+      <li>Me escribes a <a class="link" href="mailto:finanzas@juanvotruba.com">finanzas@juanvotruba.com</a> y eliges el nivel que se ajusta a ti.</li>
+      <li>Llenas un cuestionario corto: objetivo, plazo, ahorros disponibles, experiencia previa y tolerancia al riesgo.</li>
+      <li>Pagas para reservar tu cupo, por transferencia bancaria.</li>
+      <li>Agendamos la sesión inicial por videollamada o presencial: 60 minutos en Arranque y 90 en Acompañamiento 90 días.</li>
+      <li>En la sesión definimos tu perfil de inversión, la ruta para abrir tu cuenta y enviar el dinero, y cómo hacer tu primera compra.</li>
+      <li>Recibes tu plan por escrito dentro de los 3 días hábiles siguientes.</li>
+      <li>Hacemos el seguimiento que incluye tu nivel.</li>
+    </ol>
+    <p style="font-size:15px;color:var(--muted)">Si necesitas reprogramar una sesión, avísame con al menos 24 horas de anticipación.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="eyebrow"><b></b>Quién te acompaña</p>
+    <div class="about">
+      <img src="juan.jpg" alt="Juan, creador del canal Finanzas Ecuador" width="800" height="862">
+      <div>
+        <h2 style="margin-bottom:14px">Soy Juan</h2>
+        <p>Creador del canal Finanzas Ecuador. Invierto activamente con mi propio dinero.</p>
+        <p style="margin-bottom:0">Mi portafolio combina rentas de inmuebles, depósitos a plazo fijo en Ecuador y acciones y ETFs de Estados Unidos a través de Interactive Brokers. Lo que te enseño es lo que yo hago y he verificado, adaptado a las reglas de acceso, envío de dinero e impuestos que enfrentamos desde Ecuador.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Mira cómo es un plan</h2>
+    <p>Esta es la estructura que recibes: perfil de riesgo, distribución del portafolio, ruta práctica y seguimiento. Son planes de ejemplo, sin cifras ni datos personales.</p>
+    <div class="dl">
+      <a href="plan-ejemplo-arranque.pdf" download>
+        <strong>Plan Arranque</strong>
+        <small>Ejemplo · PDF, 8 páginas</small>
+      </a>
+      <a href="plan-ejemplo-90-dias.pdf" download>
+        <strong>Plan 90 días</strong>
+        <small>Ejemplo · PDF, 10 páginas</small>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Qué incluye y qué no</h2>
+    <p>La mentoría es educativa: te enseño a decidir y a ejecutar, pero la decisión y el dinero siempre son tuyos.</p>
+    <h3 style="font-size:19px;margin:22px 0 8px">Incluye</h3>
+    <ul class="checks">
+      <li>Definir tu perfil de inversión con el marco de tres perfiles del canal (conservador, moderado y agresivo).</li>
+      <li>Una distribución de portafolio explicada, con el porqué de cada decisión.</li>
+      <li>La ruta práctica: abrir tu cuenta en Interactive Brokers, fondearla y hacer tu primera compra.</li>
+      <li>Un plan escrito al que puedes volver cuando tengas dudas.</li>
+    </ul>
+    <h3 style="font-size:19px;margin:26px 0 8px">No incluye</h3>
+    <ul class="checks cross">
+      <li>Manejar tu dinero ni acceder a tu cuenta o a tus claves. Tú ejecutas todas las operaciones.</li>
+      <li>Garantías de rendimiento.</li>
+      <li>Asesoría tributaria o legal. Para eso, consulta a un contador o abogado.</li>
+      <li>Recomendaciones de compra o venta de valores individuales con precios objetivo.</li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>¿Vives fuera de Ecuador?</h2>
+    <p>Escríbeme con tu país. Reviso costos, acceso y regulación de tu caso y te confirmo si puedo acompañarte, antes de que pagues.</p>
+    <p><a class="link" href="mailto:finanzas@juanvotruba.com?subject=Mentor%C3%ADa%201%3A1%20-%20Vivo%20fuera%20de%20Ecuador&body=Hola%20Juan%2C%20vivo%20en%20(pa%C3%ADs)%20y%20quiero%20saber%20si%20puedes%20acompa%C3%B1arme.">Escríbeme con tu país</a></p>
+  </div>
+</section>
+
+<section class="final">
+  <div class="wrap">
+    <h2>¿Empezamos con tu primer portafolio?</h2>
+    <p class="lead">Escríbeme, elegimos el nivel que te conviene y reservamos tu cupo.</p>
+    <a class="btn" href="mailto:finanzas@juanvotruba.com?subject=Mentor%C3%ADa%201%3A1%20-%20Quiero%20informaci%C3%B3n">Escríbeme para empezar</a>
+    <p class="mail">finanzas@juanvotruba.com</p>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p><strong>Aviso importante.</strong> Esta mentoría tiene fines exclusivamente educativos. No constituye una recomendación personalizada de compra o venta de valores ni una oferta de gestión de inversiones.</p>
+    <p>Toda inversión conlleva riesgo, incluida la pérdida parcial o total del capital. Los rendimientos pasados no garantizan resultados futuros. Tú eres el único responsable de tus decisiones de inversión y de las operaciones que ejecutes en tu cuenta.</p>
+    <p>© 2026 Finanzas Ecuador</p>
+  </div>
+</footer>
+
+</body>
+</html>
