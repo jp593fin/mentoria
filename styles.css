@@ -245,3 +245,13 @@ img.sheet.front,img.sheet.back{padding:0;background:#fff;border:1px solid var(--
 .tiers .wrap{padding-top:96px;padding-bottom:96px;display:flex;flex-direction:column;gap:40px}
 .about.cream{background:var(--cream)}
 @media (max-width:860px){.tiers .wrap{padding-top:56px;padding-bottom:56px;gap:28px}}
+.lead-form .sel input{flex:1 1 200px;min-width:0;height:58px;padding:0 24px;font:inherit;font-size:17px;border:1.5px solid #CFCABF;border-radius:999px;background:#fff;color:var(--ink)}
+.lead-form .sel input::placeholder{color:var(--muted2)}
+.lead-form .sel input:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.lead-form .go{height:58px;padding:0 32px;font:inherit;font-size:17px;font-weight:700;border:0;border-radius:999px;background:var(--yellow);color:var(--ink);cursor:pointer}
+.lead-form .go:hover{filter:brightness(.96)}
+.lead-form .go[disabled]{opacity:.6;cursor:default}
+.lead-form .go:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.cta .lead-form .sel input{border:0}
+.cta .lead-form .go{background:var(--ink);color:#fff}
+@media (max-width:860px){.lead-form .sel input{height:56px;flex:1 1 100%}.lead-form .go{height:56px}}

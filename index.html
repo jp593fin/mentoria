@@ -40,6 +40,12 @@
 
 <form class="lead-form" data-kit action="https://app.kit.com/forms/10246836/subscriptions" method="post">
 <div class="sel">
+<label class="sr" for="nombre-hero">Tu nombre</label>
+<input id="nombre-hero" type="text" name="fields[first_name]" placeholder="Tu nombre" autocomplete="given-name" required>
+<label class="sr" for="email-hero">Tu email</label>
+<input id="email-hero" type="email" name="email_address" placeholder="tu@email.com" autocomplete="email" required>
+</div>
+<div class="sel">
 <label class="sr" for="pais-hero">Tu país</label>
 <select id="pais-hero" name="fields[pais]" required>
 <option value="" disabled selected>Tu país</option>
@@ -53,11 +59,7 @@
 <option value="No sé">Aún no lo sé</option>
 </select>
 </div>
-<div class="signup">
-<label class="sr" for="email-hero">Tu email</label>
-<input id="email-hero" type="email" name="email_address" placeholder="tu@email.com" autocomplete="email" required>
-<button type="submit">Quiero empezar</button>
-</div>
+<button class="go" type="submit">Quiero empezar</button>
 </form>
 <p class="msg" role="status" aria-live="polite"></p>
 <div class="micro">Te escribo en menos de 24 horas hábiles. Sin compromiso hasta que reserves tu cupo. También recibes Lunes en Wall Street, mi correo de cada lunes; cancela cuando quieras.</div>
@@ -129,7 +131,7 @@
 <div class="wrap">
 <h2>Cómo funciona</h2>
 <div class="flow">
-<div class="cardx"><small>01</small><h3>Me escribes</h3><p>Con tu país y el nivel que te interesa. Te respondo en menos de 24 horas hábiles.</p></div>
+<div class="cardx"><small>01</small><h3>Me escribes</h3><p>Con tu nombre, tu país y el nivel que te interesa. Te respondo en menos de 24 horas hábiles.</p></div>
 <div class="cardx"><small>02</small><h3>Cuestionario y cupo</h3><p>Objetivo, plazo, ahorros, experiencia y tolerancia al riesgo. Pagas para reservar tu cupo: transferencia local en Ecuador; desde otros países, por Global66 o Wise.</p></div>
 <div class="cardx"><small>03</small><h3>Sesión 1:1</h3><p>Definimos tu perfil, la ruta para abrir y fondear tu cuenta y tu primera compra.</p></div>
 <div class="cardx"><small>04</small><h3>Plan y seguimiento</h3><p>Recibes tu plan por escrito en 3 días hábiles. Luego, el seguimiento de tu nivel.</p></div>
@@ -186,8 +188,14 @@
 <section class="cta" id="empezar">
 <div class="wrap">
 <h2>¿Empezamos con tu primer portafolio?</h2>
-<p>Déjame tu correo, tu país y el nivel. Te escribo y vemos juntos si es para ti.</p>
+<p>Déjame tu nombre, tu correo, tu país y el nivel. Te escribo y vemos juntos si es para ti.</p>
 <form class="lead-form" data-kit action="https://app.kit.com/forms/10246836/subscriptions" method="post">
+<div class="sel">
+<label class="sr" for="nombre-cta">Tu nombre</label>
+<input id="nombre-cta" type="text" name="fields[first_name]" placeholder="Tu nombre" autocomplete="given-name" required>
+<label class="sr" for="email-cta">Tu email</label>
+<input id="email-cta" type="email" name="email_address" placeholder="tu@email.com" autocomplete="email" required>
+</div>
 <div class="sel">
 <label class="sr" for="pais-cta">Tu país</label>
 <select id="pais-cta" name="fields[pais]" required>
@@ -202,11 +210,7 @@
 <option value="No sé">Aún no lo sé</option>
 </select>
 </div>
-<div class="signup">
-<label class="sr" for="email-cta">Tu email</label>
-<input id="email-cta" type="email" name="email_address" placeholder="tu@email.com" autocomplete="email" required>
-<button type="submit">Quiero empezar</button>
-</div>
+<button class="go" type="submit">Quiero empezar</button>
 </form>
 <p class="msg" role="status" aria-live="polite"></p>
 <p style="font-size:15px">¿Prefieres escribirme directo? <a href="mailto:finanzas@juanvotruba.com?subject=Mentor%C3%ADa%201%3A1">finanzas@juanvotruba.com</a></p>
