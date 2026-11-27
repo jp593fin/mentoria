@@ -113,7 +113,6 @@ const questions = [
   {
     id: "fondo_emergencia",
     type: "choice",
-    autoAdvance: true,
     title: "¿Tienes ahorros aparte para emergencias (3 meses de gastos o más)?",
     required: true,
     options: ["Sí", "No"]
@@ -121,7 +120,6 @@ const questions = [
   {
     id: "deuda_cara",
     type: "choice",
-    autoAdvance: true,
     title: "¿Tienes deudas con intereses altos, como tarjetas de crédito?",
     required: true,
     options: ["Sí", "No"]
@@ -190,9 +188,9 @@ const questions = [
   {
     id: "expectativa",
     type: "textarea",
-    title: "¿Qué esperas lograr con la mentoría?",
+    title: "¿Qué esperas lograr con la mentoría? (Opcional)",
     help: "Con una frase basta. Por ejemplo: «Quiero salir con un plan y saber cómo hacer mi primera inversión».",
-    required: true
+    required: false
   },
   {
     id: "confirmacion",
@@ -210,7 +208,6 @@ const state = {
   submitted: false,
   honeypot: ""
 };
-let advanceTimer;
 
 const elements = {
   startScreen: document.getElementById("start-screen"),
@@ -310,7 +307,6 @@ function getCurrentQuestion() {
 }
 
 function renderQuestion() {
-  clearTimeout(advanceTimer);
   const visible = getVisibleQuestions();
 
   if (state.currentIndex >= visible.length) {
@@ -421,10 +417,6 @@ function renderChoiceQuestion(wrapper, question) {
 
       if (event.key === "Enter" || event.key === " ") {
         event.preventDefault();
-        if (event.key === "Enter" && !question.autoAdvance && selectedValue === optionValue) {
-          goNext();
-          return;
-        }
         selectChoice(question, optionValue);
       }
     });
@@ -613,10 +605,6 @@ function selectChoice(question, value) {
   }
 
   renderQuestion();
-
-  if (question.autoAdvance) {
-    advanceTimer = setTimeout(goNext, 300);
-  }
 }
 
 function handleSubmit(event) {
