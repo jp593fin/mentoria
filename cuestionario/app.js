@@ -77,6 +77,11 @@ const questions = [
     title: "¿Cuál es tu objetivo principal?",
     required: true,
     options: ["Crear patrimonio a largo plazo", "Generar ingresos", "Proteger mis ahorros", "Otro"],
+    optionalField: {
+      id: "objetivo_secundario",
+      title: "¿Hay otro objetivo que también quieras trabajar? (Opcional)",
+      required: false
+    },
     conditionalField: {
       id: "objetivo_otro",
       title: "¿Cuál?",
@@ -96,18 +101,19 @@ const questions = [
     title: "¿Cuánto tienes ahorrado y listo para invertir? (USD)",
     help: "Usa rangos; no necesito cifras exactas.",
     required: true,
-    options: ["Menos de $1,000", "$1,000 a $5,000", "$5,000 a $20,000", "Más de $20,000"]
+    options: ["Menos de $1,000", "$1,000 a menos de $5,000", "$5,000 a $20,000", "Más de $20,000"]
   },
   {
     id: "aporte_mensual",
     type: "choice",
     title: "¿Cuánto podrías aportar cada mes? (USD)",
     required: true,
-    options: ["Nada por ahora", "Hasta $100", "$100 a $300", "Más de $300"]
+    options: ["Nada por ahora", "Más de $0 y menos de $100", "$100 a $300", "Más de $300"]
   },
   {
     id: "fondo_emergencia",
     type: "choice",
+    autoAdvance: true,
     title: "¿Tienes ahorros aparte para emergencias (3 meses de gastos o más)?",
     required: true,
     options: ["Sí", "No"]
@@ -115,6 +121,7 @@ const questions = [
   {
     id: "deuda_cara",
     type: "choice",
+    autoAdvance: true,
     title: "¿Tienes deudas con intereses altos, como tarjetas de crédito?",
     required: true,
     options: ["Sí", "No"]
@@ -188,6 +195,7 @@ const state = {
   submitted: false,
   honeypot: ""
 };
+let advanceTimer;
 
 const elements = {
   startScreen: document.getElementById("start-screen"),
@@ -222,10 +230,21 @@ function initialize() {
 
   if (saved && saved.answers && Object.keys(saved.answers).length > 0) {
     state.answers = saved.answers;
-    state.currentIndex = Math.min(
+    const visible = getVisibleQuestions();
+    state.currentIndex = Math.max(0, Math.min(
       Number.isInteger(saved.currentIndex) ? saved.currentIndex : 0,
-      questions.length - 1
-    );
+      visible.length - 1
+    ));
+    // El rango anterior incluía un límite ambiguo. Pide elegirlo de nuevo.
+    for (const [id, previousRange] of [
+      ["ahorros", "$1,000 a $5,000"],
+      ["aporte_mensual", "Hasta $100"]
+    ]) {
+      if (state.answers[id] === previousRange) {
+        delete state.answers[id];
+        state.currentIndex = Math.min(state.currentIndex, visible.findIndex(question => question.id === id));
+      }
+    }
     elements.startScreen.hidden = true;
     elements.resumeScreen.hidden = false;
   }
@@ -271,6 +290,7 @@ function getCurrentQuestion() {
 }
 
 function renderQuestion() {
+  clearTimeout(advanceTimer);
   const visible = getVisibleQuestions();
 
   if (state.currentIndex >= visible.length) {
@@ -318,9 +338,8 @@ function renderQuestion() {
   saveProgress();
 
   requestAnimationFrame(() => {
-    const firstFocusable = elements.questionContent.querySelector(
-      "input, textarea, button"
-    );
+    const firstFocusable = wrapper.querySelector(".option[tabindex='0']") ||
+      wrapper.querySelector("input, textarea, button");
     if (firstFocusable) firstFocusable.focus();
   });
 }
@@ -330,6 +349,7 @@ function renderChoiceQuestion(wrapper, question) {
   list.className = "option-list";
   list.setAttribute("role", "radiogroup");
   list.setAttribute("aria-label", question.title);
+  const selectedValue = state.answers[question.id];
 
   question.options.forEach((option, index) => {
     const optionValue = typeof option === "string" ? option : option.value;
@@ -342,7 +362,7 @@ function renderChoiceQuestion(wrapper, question) {
     button.dataset.value = optionValue;
     button.setAttribute("role", "radio");
     button.setAttribute("aria-checked", String(state.answers[question.id] === optionValue));
-    button.tabIndex = state.answers[question.id] === optionValue ? 0 : index === 0 ? 0 : -1;
+    button.tabIndex = selectedValue === optionValue || (!selectedValue && index === 0) ? 0 : -1;
 
     if (state.answers[question.id] === optionValue) {
       button.classList.add("selected");
@@ -378,6 +398,10 @@ function renderChoiceQuestion(wrapper, question) {
 
       if (event.key === "Enter" || event.key === " ") {
         event.preventDefault();
+        if (event.key === "Enter" && !question.autoAdvance && selectedValue === optionValue) {
+          goNext();
+          return;
+        }
         selectChoice(question, optionValue);
       }
     });
@@ -397,6 +421,9 @@ function renderChoiceQuestion(wrapper, question) {
       renderConditionalTextField(wrapper, conditional);
     }
   }
+  if (question.optionalField) {
+    renderConditionalTextField(wrapper, question.optionalField);
+  }
 }
 
 function renderConditionalTextField(wrapper, field) {
@@ -413,6 +440,7 @@ function renderConditionalTextField(wrapper, field) {
   input.type = "text";
   input.value = state.answers[field.id] || "";
   input.required = field.required;
+  if (field.id === "objetivo_secundario") input.maxLength = 300;
   input.addEventListener("input", () => {
     state.answers[field.id] = input.value;
     saveProgress();
@@ -509,14 +537,11 @@ function selectChoice(question, value) {
     }
   }
 
-  saveProgress();
   renderQuestion();
 
-  setTimeout(() => {
-    if (getCurrentQuestion()?.id === question.id && validateCurrentQuestion(false)) {
-      goNext();
-    }
-  }, 300);
+  if (question.autoAdvance) {
+    advanceTimer = setTimeout(goNext, 300);
+  }
 }
 
 function handleSubmit(event) {
@@ -653,13 +678,14 @@ async function submitAnswers() {
   elements.backButton.disabled = true;
   elements.formError.hidden = true;
 
-  const payload = buildPayload();
+  const recommendation = calculateRecommendation();
+  const payload = buildPayload(recommendation);
   const honeypot = elements.website.value.trim();
 
   if (honeypot) {
     clearSavedState();
     state.submitted = true;
-    showFinal(payload);
+    showFinal(payload, recommendation.explicacion);
     return;
   }
 
@@ -696,12 +722,10 @@ async function submitAnswers() {
 
   clearSavedState();
   state.submitted = true;
-  showFinal(payload);
+  showFinal(payload, recommendation.explicacion);
 }
 
-function buildPayload() {
-  const recommendation = calculateRecommendation();
-
+function buildPayload(recommendation) {
   return {
     fecha: new Date().toISOString(),
     nombre: getAnswer("nombre"),
@@ -728,7 +752,8 @@ function buildPayload() {
     estado: recommendation.estado,
     motivos: recommendation.motivos,
     sugerencia: recommendation.sugerencia,
-    website: elements.website.value.trim()
+    website: elements.website.value.trim(),
+    objetivo_secundario: getAnswer("objetivo_secundario").trim()
   };
 }
 
@@ -786,7 +811,12 @@ function calculateRecommendation() {
     sugerencia:
       ahorrosAmplios || principianteConAporte
         ? "Acompañamiento 90 días"
-        : "Arranque"
+        : "Arranque",
+    explicacion: ahorrosAmplios
+      ? "Por el monto que ya tienes ahorrado, te propongo un plan con varios seguimientos."
+      : principianteConAporte
+        ? "Como aún no has invertido y puedes aportar al menos $100 al mes, te propongo apoyo durante tus primeros pasos."
+        : "Por tu combinación de ahorro, aporte mensual y experiencia, una sesión inicial y un seguimiento son un buen punto de partida."
   };
 }
 
@@ -826,7 +856,7 @@ async function sendToAppsScript(payload) {
   });
 }
 
-function showFinal(payload) {
+function showFinal(payload, explicacion) {
   elements.questionScreen.hidden = true;
   elements.progressArea.hidden = true;
   elements.finalScreen.hidden = false;
@@ -862,8 +892,11 @@ function showFinal(payload) {
       "Te escribo en menos de 24 horas hábiles con los pasos para llegar ahí.";
     elements.finalContent.appendChild(closing);
   } else {
+    const planMessage = payload.nivel === "No sé, recomiéndame"
+      ? `Por tus respuestas, te sugiero ${payload.sugerencia}. ${explicacion}`
+      : `Elegiste ${payload.nivel}.`;
     message.textContent =
-      `Por tus respuestas, te sugiero ${payload.sugerencia}. ` +
+      planMessage + " " +
       "Te confirmo por correo en menos de 24 horas hábiles y coordinamos la fecha de tu sesión.";
     elements.finalContent.appendChild(message);
 
