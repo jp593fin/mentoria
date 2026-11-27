@@ -258,6 +258,16 @@ function initialize() {
 
 function startNew() {
   state.answers = {};
+  // Nivel elegido en la landing (?nivel=arranque o ?nivel=90): llega marcado y se puede cambiar.
+  try {
+    const nivelParam = new URLSearchParams(window.location.search).get("nivel");
+    const nivelMap = { arranque: "Arranque", "90": "Acompañamiento 90 días" };
+    if (nivelParam && nivelMap[nivelParam.toLowerCase()]) {
+      state.answers.nivel = nivelMap[nivelParam.toLowerCase()];
+    }
+  } catch (error) {
+    // Si el navegador no soporta URLSearchParams, la pregunta se responde normalmente.
+  }
   state.currentIndex = 0;
   state.started = true;
   state.submitted = false;
