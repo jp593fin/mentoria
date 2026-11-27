@@ -15,6 +15,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
+<style>.btn-q{margin:8px 0 14px}.cta .btn-q{background:var(--ink);color:#fff}.cta .btn-q:hover{color:#fff}</style>
 </head>
 <body>
 
@@ -38,31 +39,8 @@
 <h1>Tu primer portafolio de inversión, paso a paso.</h1>
 <p class="lead">Tú decides y ejecutas; yo te guío en cada decisión, desde abrir tu cuenta hasta tu primera compra. Terminas con un plan por escrito al que puedes volver cuando tengas dudas.</p>
 
-<form class="lead-form" data-kit action="https://app.kit.com/forms/10246836/subscriptions" method="post">
-<div class="sel">
-<label class="sr" for="nombre-hero">Tu nombre</label>
-<input id="nombre-hero" type="text" name="fields[first_name]" placeholder="Tu nombre" autocomplete="given-name" required>
-<label class="sr" for="email-hero">Tu email</label>
-<input id="email-hero" type="email" name="email_address" placeholder="tu@email.com" autocomplete="email" required>
-</div>
-<div class="sel">
-<label class="sr" for="pais-hero">Tu país</label>
-<select id="pais-hero" name="fields[pais]" required>
-<option value="" disabled selected>Tu país</option>
-<option>México</option><option>Ecuador</option><option>España</option><option>Estados Unidos</option><option>Argentina</option><option>Colombia</option><option>Perú</option><option>Chile</option><option>Otro</option>
-</select>
-<label class="sr" for="nivel-hero">Nivel que te interesa</label>
-<select id="nivel-hero" name="fields[nivel_mentoria]" required>
-<option value="" disabled selected>Nivel que te interesa</option>
-<option value="Arranque">Arranque · $90</option>
-<option value="90 días">Acompañamiento 90 días · $225</option>
-<option value="No sé">Aún no lo sé</option>
-</select>
-</div>
-<button class="go" type="submit">Quiero empezar</button>
-</form>
-<p class="msg" role="status" aria-live="polite"></p>
-<div class="micro">Te escribo en menos de 24 horas hábiles. Sin compromiso hasta que reserves tu cupo. También recibes Lunes en Wall Street, mi correo de cada lunes; cancela cuando quieras.</div>
+<a class="btn btn-q" href="cuestionario/">Empezar mi cuestionario</a>
+<div class="micro">Toma unos 5 minutos. Te escribo en menos de 24 horas hábiles. Sin compromiso hasta que reserves tu cupo. También recibes Lunes en Wall Street, mi correo de cada lunes; cancela cuando quieras.</div>
 <div class="facts"><span>Videollamada 1:1</span><span>Plan por escrito</span><span>Seguimiento incluido</span></div>
 </div>
 
@@ -103,7 +81,7 @@
 <li><b>Plan escrito</b> con tu portafolio</li>
 <li><b>1 seguimiento</b> de 30 min, a las 4 semanas</li>
 </ul>
-<a class="btn" href="#empezar" data-nivel="Arranque">Quiero Arranque</a>
+<a class="btn" href="cuestionario/">Quiero Arranque</a>
 <p class="slots">8 cupos al mes</p>
 </div>
 <div class="plan main">
@@ -119,7 +97,7 @@
 <li><b>1 mensaje por semana</b>, respuesta en 48 h</li>
 <li><b>Revisión final</b> al cierre de los 90 días</li>
 </ul>
-<a class="btn" href="#empezar" data-nivel="90 días">Quiero 90 días</a>
+<a class="btn" href="cuestionario/">Quiero 90 días</a>
 <p class="slots">3 cupos al mes</p>
 </div>
 </div>
@@ -188,31 +166,9 @@
 <section class="cta" id="empezar">
 <div class="wrap">
 <h2>¿Empezamos con tu primer portafolio?</h2>
-<p>Déjame tu nombre, tu correo, tu país y el nivel. Te escribo y vemos juntos si es para ti.</p>
-<form class="lead-form" data-kit action="https://app.kit.com/forms/10246836/subscriptions" method="post">
-<div class="sel">
-<label class="sr" for="nombre-cta">Tu nombre</label>
-<input id="nombre-cta" type="text" name="fields[first_name]" placeholder="Tu nombre" autocomplete="given-name" required>
-<label class="sr" for="email-cta">Tu email</label>
-<input id="email-cta" type="email" name="email_address" placeholder="tu@email.com" autocomplete="email" required>
-</div>
-<div class="sel">
-<label class="sr" for="pais-cta">Tu país</label>
-<select id="pais-cta" name="fields[pais]" required>
-<option value="" disabled selected>Tu país</option>
-<option>México</option><option>Ecuador</option><option>España</option><option>Estados Unidos</option><option>Argentina</option><option>Colombia</option><option>Perú</option><option>Chile</option><option>Otro</option>
-</select>
-<label class="sr" for="nivel-cta">Nivel que te interesa</label>
-<select id="nivel-cta" name="fields[nivel_mentoria]" required>
-<option value="" disabled selected>Nivel que te interesa</option>
-<option value="Arranque">Arranque · $90</option>
-<option value="90 días">Acompañamiento 90 días · $225</option>
-<option value="No sé">Aún no lo sé</option>
-</select>
-</div>
-<button class="go" type="submit">Quiero empezar</button>
-</form>
-<p class="msg" role="status" aria-live="polite"></p>
+<p>Responde un cuestionario corto. Lo leo yo personalmente y te escribo para ver juntos si es para ti.</p>
+<a class="btn btn-q" href="cuestionario/">Empezar mi cuestionario</a>
+<div class="micro">Toma unos 5 minutos. Con tus respuestas te digo qué nivel te conviene.</div>
 <p style="font-size:15px">¿Prefieres escribirme directo? <a href="mailto:finanzas@juanvotruba.com?subject=Mentor%C3%ADa%201%3A1">finanzas@juanvotruba.com</a></p>
 </div>
 </section>
@@ -228,14 +184,5 @@
 </div>
 </footer>
 
-<script src="form.js"></script>
-<script>
-document.querySelectorAll('[data-nivel]').forEach(function (a) {
-  a.addEventListener('click', function () {
-    var s = document.getElementById('nivel-cta');
-    if (s) s.value = a.getAttribute('data-nivel');
-  });
-});
-</script>
 </body>
 </html>
