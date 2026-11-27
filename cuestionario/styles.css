@@ -45,6 +45,7 @@ button:disabled {
 }
 
 button:focus-visible,
+.back-to-mentoria:focus-visible,
 input:focus-visible,
 textarea:focus-visible {
   outline: 3px solid rgba(245, 197, 24, 0.55);
@@ -370,6 +371,15 @@ h2 {
   margin-top: 28px;
   color: var(--muted);
   font-size: 14px;
+}
+
+.back-to-mentoria {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 8px;
+  text-align: center;
+  text-decoration: none;
 }
 
 .retry-area {
