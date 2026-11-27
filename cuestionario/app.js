@@ -150,14 +150,6 @@ const questions = [
     }
   },
   {
-    id: "envio_dinero",
-    type: "text",
-    title: "¿Cómo piensas enviar dinero al exterior para invertir?",
-    help: "Si aún no lo sabes, escribe «No sé»; lo vemos en la sesión.",
-    required: false,
-    inputType: "text"
-  },
-  {
     id: "freno",
     type: "multiple",
     title: "¿Qué te ha frenado hasta ahora para empezar a invertir?",
@@ -247,11 +239,8 @@ function initialize() {
       state.answers.freno_otro = state.answers.freno;
       state.answers.freno = ["Otro"];
     }
-    const visible = getVisibleQuestions();
-    state.currentIndex = Math.max(0, Math.min(
-      Number.isInteger(saved.currentIndex) ? saved.currentIndex : 0,
-      visible.length - 1
-    ));
+    state.currentIndex = restoreQuestionIndex(saved);
+    delete state.answers.envio_dinero;
     // El rango anterior incluía un límite ambiguo. Pide elegirlo de nuevo.
     for (const [id, previousRange] of [
       ["ahorros", "$1,000 a $5,000"],
@@ -259,7 +248,7 @@ function initialize() {
     ]) {
       if (state.answers[id] === previousRange) {
         delete state.answers[id];
-        state.currentIndex = Math.min(state.currentIndex, visible.findIndex(question => question.id === id));
+        state.currentIndex = Math.min(state.currentIndex, questions.findIndex(question => question.id === id));
       }
     }
     elements.startScreen.hidden = true;
@@ -292,32 +281,27 @@ function showQuestionScreen() {
   renderQuestion();
 }
 
-function getVisibleQuestions() {
-  return questions.filter((question) => {
-    if (question.id === "envio_dinero") {
-      return state.answers.broker !== "Sí";
-    }
-    return true;
-  });
+function restoreQuestionIndex(saved) {
+  const savedQuestion = questions.findIndex(question => question.id === saved.questionId);
+  if (savedQuestion >= 0) return savedQuestion;
+
+  let index = Number.isInteger(saved.currentIndex) ? saved.currentIndex : 0;
+  // Antes, la pregunta eliminada aparecía justo antes de «¿Qué te ha frenado?».
+  const removedIndex = questions.findIndex(question => question.id === "freno");
+  if (saved.answers.broker !== "Sí" && index > removedIndex) index -= 1;
+  return Math.max(0, Math.min(index, questions.length - 1));
 }
 
 function getCurrentQuestion() {
-  const visible = getVisibleQuestions();
-  return visible[state.currentIndex] || visible[visible.length - 1];
+  return questions[state.currentIndex];
 }
 
 function renderQuestion() {
-  const visible = getVisibleQuestions();
-
-  if (state.currentIndex >= visible.length) {
-    state.currentIndex = visible.length - 1;
-  }
-
   const question = getCurrentQuestion();
-  const position = visible.indexOf(question) + 1;
+  const position = state.currentIndex + 1;
 
-  elements.progressLabel.textContent = `Pregunta ${position} de ${visible.length}`;
-  elements.progressBar.style.width = `${(position / visible.length) * 100}%`;
+  elements.progressLabel.textContent = `Pregunta ${position} de ${questions.length}`;
+  elements.progressBar.style.width = `${(position / questions.length) * 100}%`;
   elements.backButton.hidden = position === 1;
   elements.formError.hidden = true;
   elements.questionContent.innerHTML = "";
@@ -729,9 +713,7 @@ function validateMultipleAnswer(question) {
 function goNext() {
   if (!validateCurrentQuestion(true)) return;
 
-  const visible = getVisibleQuestions();
-
-  if (state.currentIndex < visible.length - 1) {
+  if (state.currentIndex < questions.length - 1) {
     state.currentIndex += 1;
     renderQuestion();
     return;
@@ -741,8 +723,6 @@ function goNext() {
 }
 
 function goBack() {
-  const visible = getVisibleQuestions();
-
   if (state.currentIndex > 0) {
     state.currentIndex -= 1;
     renderQuestion();
@@ -825,7 +805,6 @@ function buildPayload(recommendation) {
     experiencia_otro: getAnswer("experiencia_otro"),
     broker: getAnswer("broker"),
     broker_cual: getAnswer("broker_cual"),
-    envio_dinero: getAnswer("envio_dinero"),
     freno: formatFreno(),
     caida_20: getAnswer("caida_20"),
     expectativa: getAnswer("expectativa"),
@@ -1037,6 +1016,7 @@ function saveProgress() {
       STORAGE_KEY,
       JSON.stringify({
         currentIndex: state.currentIndex,
+        questionId: getCurrentQuestion().id,
         answers: state.answers
       })
     );
