@@ -161,9 +161,23 @@ const questions = [
   },
   {
     id: "freno",
-    type: "textarea",
+    type: "multiple",
     title: "¿Qué te ha frenado hasta ahora para empezar a invertir?",
-    required: true
+    help: "Elige una o dos opciones. Si ya marcaste dos, desmarca una para cambiarla.",
+    required: true,
+    maxChoices: 2,
+    options: [
+      "No sé por dónde empezar",
+      "Me preocupa perder dinero",
+      "No sé qué bróker usar",
+      "Me falta tiempo para investigar",
+      "Otro"
+    ],
+    conditionalField: {
+      id: "freno_otro",
+      title: "¿Qué más te ha frenado?",
+      required: true
+    }
   },
   {
     id: "caida_20",
@@ -177,6 +191,7 @@ const questions = [
     id: "expectativa",
     type: "textarea",
     title: "¿Qué esperas lograr con la mentoría?",
+    help: "Con una frase basta. Por ejemplo: «Quiero salir con un plan y saber cómo hacer mi primera inversión».",
     required: true
   },
   {
@@ -230,6 +245,11 @@ function initialize() {
 
   if (saved && saved.answers && Object.keys(saved.answers).length > 0) {
     state.answers = saved.answers;
+    // Conserva como «Otro» las respuestas del antiguo campo de texto.
+    if (typeof state.answers.freno === "string" && state.answers.freno.trim()) {
+      state.answers.freno_otro = state.answers.freno;
+      state.answers.freno = ["Otro"];
+    }
     const visible = getVisibleQuestions();
     state.currentIndex = Math.max(0, Math.min(
       Number.isInteger(saved.currentIndex) ? saved.currentIndex : 0,
@@ -321,12 +341,15 @@ function renderQuestion() {
   if (question.help) {
     const help = document.createElement("p");
     help.className = "question-help";
+    help.id = "question-help";
     help.textContent = question.help;
     wrapper.appendChild(help);
   }
 
   if (question.type === "choice") {
     renderChoiceQuestion(wrapper, question);
+  } else if (question.type === "multiple") {
+    renderMultipleQuestion(wrapper, question);
   } else if (question.type === "confirmation") {
     renderConfirmationQuestion(wrapper);
   } else {
@@ -426,6 +449,56 @@ function renderChoiceQuestion(wrapper, question) {
   }
 }
 
+function renderMultipleQuestion(wrapper, question) {
+  const group = document.createElement("div");
+  group.className = "confirmations";
+  group.setAttribute("role", "group");
+  group.setAttribute("aria-label", question.title);
+  group.setAttribute("aria-describedby", "question-help");
+  wrapper.appendChild(group);
+
+  const details = document.createElement("div");
+  const otherInput = renderConditionalTextField(details, question.conditionalField);
+  wrapper.appendChild(details);
+
+  const checkboxes = question.options.map((option) => {
+    const label = document.createElement("label");
+    label.className = "checkbox-label";
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.name = question.id;
+    checkbox.value = option;
+    const text = document.createElement("span");
+    text.textContent = option;
+    label.appendChild(checkbox);
+    label.appendChild(text);
+    group.appendChild(label);
+    return checkbox;
+  });
+
+  function refreshSelection() {
+    const selected = Array.isArray(state.answers[question.id]) ? state.answers[question.id] : [];
+    for (const checkbox of checkboxes) {
+      checkbox.checked = selected.includes(checkbox.value);
+      checkbox.disabled = !checkbox.checked && selected.length >= question.maxChoices;
+    }
+    details.hidden = !selected.includes("Otro");
+    otherInput.disabled = details.hidden;
+    updateNextButton();
+  }
+
+  for (const checkbox of checkboxes) {
+    checkbox.addEventListener("change", () => {
+      state.answers[question.id] = checkboxes
+        .filter(item => item.checked)
+        .map(item => item.value);
+      refreshSelection();
+      saveProgress();
+    });
+  }
+  refreshSelection();
+}
+
 function renderConditionalTextField(wrapper, field) {
   const label = document.createElement("label");
   label.className = "field-label";
@@ -448,6 +521,7 @@ function renderConditionalTextField(wrapper, field) {
   });
 
   wrapper.appendChild(input);
+  return input;
 }
 
 function renderTextQuestion(wrapper, question) {
@@ -466,6 +540,7 @@ function renderTextQuestion(wrapper, question) {
   field.id = question.id;
   field.name = question.id;
   field.required = question.required;
+  if (question.help) field.setAttribute("aria-describedby", "question-help");
   field.value = state.answers[question.id] || "";
 
   if (question.type !== "textarea") {
@@ -555,6 +630,10 @@ function validateCurrentQuestion(showError = true) {
   const question = getCurrentQuestion();
   let message = "";
 
+  if (question.type === "multiple") {
+    message = validateMultipleAnswer(question);
+  }
+
   if (question.type === "choice") {
     if (!state.answers[question.id]) {
       message = "Selecciona una opción para continuar.";
@@ -619,6 +698,8 @@ function updateNextButton() {
 }
 
 function hasCurrentValue(question) {
+  if (question.type === "multiple") return !validateMultipleAnswer(question);
+
   if (question.type === "choice") {
     if (!state.answers[question.id]) return false;
 
@@ -644,6 +725,17 @@ function hasCurrentValue(question) {
   }
 
   return Boolean(String(state.answers[question.id] || "").trim());
+}
+
+function validateMultipleAnswer(question) {
+  const selected = state.answers[question.id];
+  if (!Array.isArray(selected) || selected.length === 0 || selected.length > question.maxChoices) {
+    return "Elige una o dos opciones para continuar.";
+  }
+  if (selected.includes("Otro") && !getAnswer(question.conditionalField.id).trim()) {
+    return "Cuéntame qué más te ha frenado para continuar.";
+  }
+  return "";
 }
 
 function goNext() {
@@ -746,7 +838,7 @@ function buildPayload(recommendation) {
     broker: getAnswer("broker"),
     broker_cual: getAnswer("broker_cual"),
     envio_dinero: getAnswer("envio_dinero"),
-    freno: getAnswer("freno"),
+    freno: formatFreno(),
     caida_20: getAnswer("caida_20"),
     expectativa: getAnswer("expectativa"),
     estado: recommendation.estado,
@@ -755,6 +847,15 @@ function buildPayload(recommendation) {
     website: elements.website.value.trim(),
     objetivo_secundario: getAnswer("objetivo_secundario").trim()
   };
+}
+
+function formatFreno() {
+  const selected = getAnswer("freno");
+  if (!Array.isArray(selected)) return selected;
+  return selected.map(option => option === "Otro"
+    ? `Otro: ${getAnswer("freno_otro").trim()}`
+    : option
+  ).join(" · ");
 }
 
 function calculateRecommendation() {
