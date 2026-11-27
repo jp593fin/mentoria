@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Cuestionario de ingreso a la mentoría de inversión 1:1 de Juan Votruba">
+  <title>Cuestionario de ingreso · Juan Votruba</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="brand">
+      <img src="../avatar.png" alt="Juan Votruba" class="avatar">
+      <div>
+        <strong>Juan Votruba</strong>
+        <span>Mentoría 1:1 · Plan de inversión</span>
+      </div>
+    </div>
+
+    <div id="progress-area" class="progress-area" hidden>
+      <div class="progress-meta">
+        <span id="progress-label">Pregunta 1 de 1</span>
+      </div>
+      <div class="progress-track" aria-hidden="true">
+        <div id="progress-bar" class="progress-bar"></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <section id="start-screen" class="screen intro-screen">
+      <p class="eyebrow">Mentoría de inversión 1:1</p>
+      <h1>Cuestionario de ingreso</h1>
+      <p class="lead">
+        Toma unos 5 minutos. Lo leo yo personalmente y lo uso solo para preparar tu plan
+        y recomendarte el nivel que más te conviene. Tus respuestas son confidenciales.
+      </p>
+      <button id="start-button" class="button button-primary" type="button">Empezar</button>
+    </section>
+
+    <section id="question-screen" class="screen" hidden>
+      <form id="question-form" novalidate>
+        <div id="question-content"></div>
+
+        <div id="form-error" class="form-error" role="alert" hidden></div>
+
+        <div class="navigation">
+          <button id="back-button" class="button button-secondary" type="button" hidden>
+            Atrás
+          </button>
+          <button id="next-button" class="button button-primary" type="submit">
+            Siguiente
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <section id="final-screen" class="screen" hidden>
+      <div id="final-content"></div>
+    </section>
+
+    <section id="resume-screen" class="resume-card" hidden aria-labelledby="resume-title">
+      <h2 id="resume-title">¿Quieres continuar donde lo dejaste?</h2>
+      <p>Encontré respuestas guardadas en este dispositivo.</p>
+      <div class="resume-actions">
+        <button id="resume-button" class="button button-primary" type="button">
+          Continuar
+        </button>
+        <button id="restart-button" class="button button-secondary" type="button">
+          Empezar de nuevo
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <div class="honeypot" aria-hidden="true">
+    <label for="website">No rellenar este campo</label>
+    <input id="website" name="website" type="text" tabindex="-1" autocomplete="off">
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
