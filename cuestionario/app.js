@@ -35,7 +35,7 @@ const questions = [
     options: ["México", "Ecuador", "España", "Estados Unidos", "Argentina", "Colombia", "Perú", "Chile", "Otro"],
     conditionalField: {
       id: "pais_otro",
-      title: "¿Cuál?",
+      title: "¿En qué país?",
       required: true
     }
   },
@@ -84,7 +84,7 @@ const questions = [
     },
     conditionalField: {
       id: "objetivo_otro",
-      title: "¿Cuál?",
+      title: "¿Cuál es tu objetivo?",
       required: true
     }
   },
@@ -132,7 +132,7 @@ const questions = [
     options: ["Nunca", "Solo depósitos a plazo fijo", "Bolsa o fondos", "Otro"],
     conditionalField: {
       id: "experiencia_otro",
-      title: "¿Cuál?",
+      title: "¿Qué experiencia tuviste?",
       required: true
     }
   },
@@ -258,16 +258,10 @@ function initialize() {
 
 function startNew() {
   state.answers = {};
-  // Nivel elegido en la landing (?nivel=arranque o ?nivel=90): llega marcado y se puede cambiar.
-  try {
-    const nivelParam = new URLSearchParams(window.location.search).get("nivel");
-    const nivelMap = { arranque: "Arranque", "90": "Acompañamiento 90 días" };
-    if (nivelParam && nivelMap[nivelParam.toLowerCase()]) {
-      state.answers.nivel = nivelMap[nivelParam.toLowerCase()];
-    }
-  } catch (error) {
-    // Si el navegador no soporta URLSearchParams, la pregunta se responde normalmente.
-  }
+  // Conserva la selección hecha en la página de mentoría.
+  const landingLevel = new URLSearchParams(window.location.search).get("nivel")?.toLowerCase();
+  if (landingLevel === "arranque") state.answers.nivel = "Arranque";
+  if (landingLevel === "90") state.answers.nivel = "Acompañamiento 90 días";
   state.currentIndex = 0;
   state.started = true;
   state.submitted = false;
@@ -420,19 +414,23 @@ function renderChoiceQuestion(wrapper, question) {
 
   wrapper.appendChild(list);
 
-  if (question.conditionalField) {
-    const conditional = question.conditionalField;
-    const visible =
-      state.answers[question.id] === "Otro" ||
-      state.answers[question.id] === conditional.showWhen;
-
-    if (visible) {
-      renderConditionalTextField(wrapper, conditional);
-    }
+  if (showsConditionalField(question)) {
+    renderConditionalTextField(wrapper, question.conditionalField);
   }
   if (question.optionalField) {
     renderConditionalTextField(wrapper, question.optionalField);
   }
+}
+
+function showsConditionalField(question) {
+  const field = question.conditionalField;
+  return Boolean(field) && state.answers[question.id] === (field.showWhen ?? "Otro");
+}
+
+function isConditionalAnswerMissing(question) {
+  return showsConditionalField(question) &&
+    question.conditionalField.required &&
+    !String(getAnswer(question.conditionalField.id)).trim();
 }
 
 function renderMultipleQuestion(wrapper, question) {
@@ -587,15 +585,8 @@ function renderConfirmationQuestion(wrapper) {
 function selectChoice(question, value) {
   state.answers[question.id] = value;
 
-  if (question.conditionalField) {
-    const conditional = question.conditionalField;
-    const shouldClear =
-      value !== "Otro" &&
-      value !== conditional.showWhen;
-
-    if (shouldClear) {
-      delete state.answers[conditional.id];
-    }
+  if (question.conditionalField && !showsConditionalField(question)) {
+    delete state.answers[question.conditionalField.id];
   }
 
   renderQuestion();
@@ -619,15 +610,8 @@ function validateCurrentQuestion(showError = true) {
   if (question.type === "choice") {
     if (!state.answers[question.id]) {
       message = "Selecciona una opción para continuar.";
-    } else if (question.conditionalField) {
-      const conditional = question.conditionalField;
-      const visible =
-        state.answers[question.id] === "Otro" ||
-        state.answers[question.id] === conditional.showWhen;
-
-      if (visible && !String(state.answers[conditional.id] || "").trim()) {
-        message = "Completa este campo para continuar.";
-      }
+    } else if (isConditionalAnswerMissing(question)) {
+      message = "Completa este campo para continuar.";
     }
   }
 
@@ -683,20 +667,7 @@ function hasCurrentValue(question) {
   if (question.type === "multiple") return !validateMultipleAnswer(question);
 
   if (question.type === "choice") {
-    if (!state.answers[question.id]) return false;
-
-    if (question.conditionalField) {
-      const conditional = question.conditionalField;
-      const visible =
-        state.answers[question.id] === "Otro" ||
-        state.answers[question.id] === conditional.showWhen;
-
-      if (visible && !String(state.answers[conditional.id] || "").trim()) {
-        return false;
-      }
-    }
-
-    return true;
+    return Boolean(state.answers[question.id]) && !isConditionalAnswerMissing(question);
   }
 
   if (question.type === "confirmation") {
