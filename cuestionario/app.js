@@ -889,8 +889,12 @@ function calculateRecommendation() {
     state.answers.ahorros === "$5,000 a $20,000" ||
     state.answers.ahorros === "Más de $20,000";
 
+  const principianteEnBolsaOFondos =
+    state.answers.experiencia === "Nunca" ||
+    state.answers.experiencia === "Solo depósitos a plazo fijo";
+
   const principianteConAporte =
-    state.answers.experiencia === "Nunca" &&
+    principianteEnBolsaOFondos &&
     (state.answers.aporte_mensual === "$100 a $300" ||
       state.answers.aporte_mensual === "Más de $300");
 
@@ -904,7 +908,7 @@ function calculateRecommendation() {
     explicacion: ahorrosAmplios
       ? "Por el monto que ya tienes ahorrado, te propongo un plan con varios seguimientos."
       : principianteConAporte
-        ? "Como aún no has invertido y puedes aportar al menos $100 al mes, te propongo apoyo durante tus primeros pasos."
+        ? "Como estás empezando en bolsa o fondos y puedes aportar al menos $100 al mes, te propongo apoyo durante tus primeros pasos."
         : "Por tu combinación de ahorro, aporte mensual y experiencia, una sesión inicial y un seguimiento son un buen punto de partida."
   };
 }
